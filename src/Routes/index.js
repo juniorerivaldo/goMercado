@@ -3,8 +3,8 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // import of pages
-import Finances from '../Pages/Finances';
 import StackRoutes from '../Routes/StackRoutes';
+import StackRoutesFinances from './StackRoutesFinances';
 
 export default function Routes() {
   const Tab = createMaterialBottomTabNavigator();
@@ -25,8 +25,8 @@ export default function Routes() {
         }}
       />
       <Tab.Screen
-        name="Finances"
-        component={Finances}
+        name="StackRoutesFinances"
+        component={StackRoutesFinances}
         options={{
           tabBarLabel: 'Finanças',
           tabBarIcon: ({color}) => (
