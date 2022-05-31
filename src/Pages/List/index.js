@@ -49,7 +49,7 @@ export default function List() {
       title: item.title,
       qtd: item.qtd,
       qtdType: item.qtdType,
-      isCompleted: !item.isCompleted
+      isCompleted: !item.isCompleted,
     };
     await handleRemove(item.id);
 
@@ -109,9 +109,9 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    margin: 16,
-    right: 20,
-    bottom: 20,
+    margin: 10,
+    right: 50,
+    bottom: 2,
     backgroundColor: '#8000ff',
   },
   flatContainer: {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -11,15 +11,18 @@ export default function Routes() {
 
   return (
     <Tab.Navigator
-      barStyle={{backgroundColor: '#694fad'}}
+      barStyle={{backgroundColor: '#5D9CEC'}}
+      tabBarCo
       activeColor="#f0edf6"
+      shifting={true}
       inactiveColor="#3e2465">
       <Tab.Screen
         name="StackRoutes"
         component={StackRoutes}
         options={{
           tabBarLabel: 'Lista de Compras',
-          tabBarIcon: ({color}) => (
+          tabBarColor: '#8000ff',
+          tabBarIcon: color => (
             <Icon name="cart-plus" color={color} size={24} />
           ),
         }}
@@ -29,6 +32,7 @@ export default function Routes() {
         component={StackRoutesFinances}
         options={{
           tabBarLabel: 'Finanças',
+          tabBarColor: '#656D78',
           tabBarIcon: ({color}) => (
             <Icon name="account-cash-outline" color={color} size={24} />
           ),

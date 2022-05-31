@@ -16,7 +16,7 @@ export default function StackRoutesFinances() {
         component={Finances}
         options={{
           headerStyle: {
-            backgroundColor: '#8000ff',
+            backgroundColor: '#656D78',
           },
           headerTintColor: '#fff',
         }}
@@ -26,7 +26,7 @@ export default function StackRoutesFinances() {
         component={NewExpense}
         options={{
           headerStyle: {
-            backgroundColor: '#8000ff',
+            backgroundColor: '#656D78',
           },
           headerTintColor: '#fff',
         }}
