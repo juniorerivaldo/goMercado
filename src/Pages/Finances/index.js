@@ -1,5 +1,14 @@
-import React from 'react';
-import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Modal,
+  TextInput,
+  Button,
+  TouchableOpacity,
+} from 'react-native';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {FAB} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,6 +19,13 @@ export default function Finances() {
   }
   // SETUP
   const navigation = useNavigation();
+  const [saldo, setSaldo] = useState(0);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  // Open and close modal upon button clicks.
+  const toggleModalVisibility = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   return (
     <View style={styles.container}>
@@ -17,14 +33,29 @@ export default function Finances() {
         <Text style={styles.titleText}>Meu Saldo</Text>
         <View style={styles.expenseContaier}>
           <Icon name="wallet-outline" style={styles.iconLabel} />
-          <Text style={styles.subtitleText}>R$ 2.180,90</Text>
-          <TouchableOpacity style={styles.btnEditar}>
-            <Icon
-              name="cog-outline"
-              style={[styles.iconLabel ,{fontSize: 30}]}
-            />
-          </TouchableOpacity>
+          <Text style={styles.subtitleText}>R$: {saldo}</Text>
         </View>
+        <TouchableOpacity
+          onPress={toggleModalVisibility}
+          style={styles.btnEditar}>
+          <Icon name="cog-outline" style={[styles.iconLabel, {fontSize: 30}]} />
+        </TouchableOpacity>
+        <Modal visible={isModalVisible} animationType={'slide'}>
+          <View style={styles.modalContainer}>
+            <TextInput
+              style={{
+                marginBottom: 100,
+                marginTop: 30,
+                backgroundColor: '#fff',
+                borderRadius: 10,
+              }}
+              onChangeText={setSaldo}
+              keyboardType="numeric"
+              placeholder="Digite o novo saldo EX: 2.193,00"
+            />
+            <Button onPress={toggleModalVisibility} title="Fechar" />
+          </View>
+        </Modal>
       </View>
       <View style={styles.flatContainer}></View>
       <FAB style={styles.fab} Large icon="plus" onPress={NewExpense} />
@@ -59,12 +90,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     paddingLeft: 10,
+    paddingTop: 10,
   },
+
   expenseContaier: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    right: 60,
     padding: 20,
   },
   iconLabel: {
@@ -79,7 +110,16 @@ const styles = StyleSheet.create({
     left: 10,
   },
   btnEditar: {
-    left: 120,
+    left: 330,
+    bottom: 55,
+  },
+  modalContainer: {
+    flex: 1,
+    margin: 15,
+    alignItems: 'center',
+    borderRadius:10,
+    justifyContent: 'center',
+    backgroundColor: '#656D78',
   },
 
   flatContainer: {
