@@ -53,7 +53,11 @@ export default function Finances() {
               keyboardType="numeric"
               placeholder="Digite o novo saldo EX: 2.193,00"
             />
-            <Button onPress={toggleModalVisibility} title="Fechar" />
+            <TouchableOpacity
+          onPress={toggleModalVisibility}
+          >
+          <Icon name="content-save-move-outline" style={[styles.iconLabel, {fontSize: 50}]} />
+        </TouchableOpacity>
           </View>
         </Modal>
       </View>
