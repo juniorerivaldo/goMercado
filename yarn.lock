@@ -5885,6 +5885,11 @@
     "jscodeshift" "^0.13.1"
     "nullthrows" "^1.1.1"
 
+"react-native-datefield@^0.3.5":
+  "integrity" "sha512-bQ/HFKTjbF0sBcMxLSJcxixi1jsaKBQqVnxUSRLJG75DZZtKqoST5hjelTn8c+YHzmcLvZKttrvW4YT9rE5IQw=="
+  "resolved" "https://registry.npmjs.org/react-native-datefield/-/react-native-datefield-0.3.5.tgz"
+  "version" "0.3.5"
+
 "react-native-gradle-plugin@^0.0.6":
   "integrity" "sha512-eIlgtsmDp1jLC24dRn43hB3kEcZVqx6DUQbR0N1ABXGnMEafm9I3V3dUUeD1vh+Dy5WqijSoEwLNUPLgu5zDMg=="
   "resolved" "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.0.6.tgz"

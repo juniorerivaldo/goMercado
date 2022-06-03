@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Picker} from '@react-native-picker/picker';
 import {Button} from 'react-native-paper';
+import DateField from 'react-native-datefield';
 import uuid from 'react-native-uuid';
 import {useNavigation} from '@react-navigation/native';
 
@@ -19,7 +19,11 @@ export default function NewExpense() {
   const navigation = useNavigation();
   const [title, setTitle] = useState('');
   const [qtd, setQtd] = useState('');
-  const [qtdType, setQtdType] = useState('');
+  const [date, setDate] = useState(new Date());
+
+  function NewDate() {
+    console.log(date);
+  }
 
   function Finances() {
     navigation.navigate('adicionar gastos');
@@ -68,23 +72,26 @@ export default function NewExpense() {
             placeholder="Digite o valor da compra"
             placeholderTextColor={'#333'}
             onChangeText={setTitle}
-            value={ title }
-            keyboardType="numeric"
-            
-          />
-        </View>
-        <View style={styles.inputsContainer}>
-          <Icon name="numeric-positive-1" style={styles.iconLabel} />
-          <TextInput
-            style={styles.TextInput}
-            onChangeText={setQtd}
-            value={qtd}
-            placeholder="Digite a quantidade."
-            placeholderTextColor={'#333'}
+            value={title}
             keyboardType="numeric"
           />
         </View>
        
+
+       
+        <View style={ styles.dataInput }>
+        <Text style={styles.titleText}>Selecione</Text>
+        <Text style={styles.subtitleText}>a data da compra</Text>
+          <DateField
+            labelDate="Dia"
+            labelMonth="Mês"
+            labelYear="Ano"
+            defaultValue={date}
+            styleInput={ [ styles.inputBorder, { color: '#fff', marginTop:30 } ] }
+            onSubmit={(value) => setDate(value)}
+            
+          />
+        </View>
         <View style={styles.btnContainer}>
           <Button
             icon="send"
@@ -97,7 +104,7 @@ export default function NewExpense() {
               height: '60%',
               justifyContent: 'center',
             }}
-            onPress={handleNew}>
+            onPress={NewDate}>
             Enviar
           </Button>
         </View>
@@ -140,7 +147,7 @@ const styles = StyleSheet.create({
     color: 'blue',
     marginRight: 30,
   },
-  
+
   btnContainer: {
     flex: 1,
     height: 80,
@@ -148,11 +155,20 @@ const styles = StyleSheet.create({
     marginRight: 100,
     borderRadius: 15,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 40,
     justifyContent: 'center',
   },
   TextInput: {
     marginLeft: 10,
     flex: 1,
+  },
+  dataInput: {
+    marginTop: 40,
+  },
+  inputBorder: {
+    width: '30%',
+    borderRadius: 10,
+    borderColor: '#fff',
+    borderWidth: 2,
   },
 });
