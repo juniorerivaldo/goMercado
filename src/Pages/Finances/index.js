@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
+
 import {
   StyleSheet,
   Text,
@@ -12,6 +13,8 @@ import {
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {FAB} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {IconButton} from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Finances() {
   function NewExpense() {
@@ -22,10 +25,36 @@ export default function Finances() {
   const [saldo, setSaldo] = useState(0);
   const [isModalVisible, setModalVisible] = useState(false);
 
+  const [data, setData] = useState([]);
+
   // Open and close modal upon button clicks.
   const toggleModalVisibility = () => {
     setModalVisible(!isModalVisible);
   };
+
+  // recebendo os dados
+  async function handleFetchData() {
+    const response = await AsyncStorage.getItem('@web-mercado:finances');
+    const data = response ? JSON.parse(response) : [];
+    setData(data);
+  }
+
+  // funcao para recarregar a tela quando adiciona um novo item
+  useFocusEffect(
+    useCallback(() => {
+      handleFetchData();
+    }, []),
+  );
+
+  // deletando os dados
+  async function handleRemove(id) {
+    const response = await AsyncStorage.getItem('@web-mercado:finances');
+    const previousData = response ? JSON.parse(response) : [];
+
+    const data = previousData.filter(item => item.id !== id);
+    await AsyncStorage.setItem('@web-mercado:finances', JSON.stringify(data));
+    handleFetchData();
+  }
 
   return (
     <View style={styles.container}>
@@ -53,15 +82,38 @@ export default function Finances() {
               keyboardType="numeric"
               placeholder="Digite o novo saldo EX: 2.193,00"
             />
-            <TouchableOpacity
-          onPress={toggleModalVisibility}
-          >
-          <Icon name="content-save-move-outline" style={[styles.iconLabel, {fontSize: 50}]} />
-        </TouchableOpacity>
+            <TouchableOpacity onPress={toggleModalVisibility}>
+              <Icon
+                name="content-save-move-outline"
+                style={[styles.iconLabel, {fontSize: 50}]}
+              />
+            </TouchableOpacity>
           </View>
         </Modal>
       </View>
-      <View style={styles.flatContainer}></View>
+      <View style={styles.flatContainer}>
+        <FlatList
+          data={data}
+          renderItem={({item}) => (
+            <View
+              style={[styles.flatContainer, {backgroundColor: 'lightgray'}]}>
+              <View style={styles.textContainer}>
+                <Text style={styles.text}>Valor da Compra: {item.expense}</Text>
+                <Text style={styles.text}>Data da compra: {item.date}</Text>
+              </View>
+              <View>
+                <IconButton
+                  icon="trash-can-outline"
+                  size={40}
+                  color="blue"
+                  onPress={() => handleRemove(item.id)}
+                />
+              </View>
+            </View>
+          )}
+        />
+      </View>
+
       <FAB style={styles.fab} Large icon="plus" onPress={NewExpense} />
     </View>
   );
@@ -121,13 +173,30 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 15,
     alignItems: 'center',
-    borderRadius:10,
+    borderRadius: 10,
     justifyContent: 'center',
     backgroundColor: '#656D78',
   },
 
   flatContainer: {
     flex: 3,
-    backgroundColor: '#fff',
+    flexDirection: 'row',
+    marginLeft: 4,
+    marginRight: 4,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  textContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  text: {
+    padding: 10,
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });

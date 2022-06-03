@@ -11,52 +11,55 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Button} from 'react-native-paper';
 import DateField from 'react-native-datefield';
+import moment from 'moment';
+
 import uuid from 'react-native-uuid';
 import {useNavigation} from '@react-navigation/native';
 
 export default function NewExpense() {
   // SETUP
   const navigation = useNavigation();
-  const [title, setTitle] = useState('');
-  const [qtd, setQtd] = useState('');
   const [date, setDate] = useState(new Date());
-
-  function NewDate() {
-    console.log(date);
-  }
+  const [expense, setExpense] = useState('');
 
   function Finances() {
-    navigation.navigate('adicionar gastos');
+    navigation.navigate('Finanças');
   }
 
   async function handleNew() {
     try {
       const id = uuid.v4();
-      if (title == '' || qtd == '' || qtdType == null) {
+      if (expense == '' || date == '') {
         Alert.alert('Error', 'Adicione todos os campos!');
       } else {
         const newData = {
           id,
-          title,
-          qtd,
-          qtdType,
-          isCompleted: false,
+          expense,
+          date,
         };
 
         // baixando os dados e adicionando os novos com os antigos
-        const response = await AsyncStorage.getItem('@web-mercado:todos');
+        const response = await AsyncStorage.getItem('@web-mercado:finances');
         const previousData = response ? JSON.parse(response) : [];
         const data = [...previousData, newData];
 
-        await AsyncStorage.setItem('@web-mercado:todos', JSON.stringify(data));
-        setTitle('');
-        setQtd('');
-        setQtdType('');
-        List();
+        await AsyncStorage.setItem(
+          '@web-mercado:finances',
+          JSON.stringify(data),
+        );
+        setExpense('');
+        setDate(new Date());
+        Finances();
+        console.log(newData);
       }
     } catch (error) {
       console.log(error);
     }
+  }
+  // convert date
+  function convertDate(value) {
+    let newDate = moment(value).format('DD/MM/YYYY');
+    setDate(newDate);
   }
 
   return (
@@ -71,25 +74,23 @@ export default function NewExpense() {
             style={styles.TextInput}
             placeholder="Digite o valor da compra"
             placeholderTextColor={'#333'}
-            onChangeText={setTitle}
-            value={title}
+            onChangeText={setExpense}
+            value={expense}
             keyboardType="numeric"
           />
         </View>
-       
 
-       
-        <View style={ styles.dataInput }>
-        <Text style={styles.titleText}>Selecione</Text>
-        <Text style={styles.subtitleText}>a data da compra</Text>
+        <View style={styles.dataInput}>
+          <Text style={styles.titleText}>Selecione</Text>
+          <Text style={styles.subtitleText}>a data da compra</Text>
           <DateField
             labelDate="Dia"
             labelMonth="Mês"
             labelYear="Ano"
+            autoFocus={true}
             defaultValue={date}
-            styleInput={ [ styles.inputBorder, { color: '#fff', marginTop:30 } ] }
-            onSubmit={(value) => setDate(value)}
-            
+            styleInput={[styles.inputBorder, {color: '#fff', marginTop: 30}]}
+            onSubmit={value => convertDate(value)}
           />
         </View>
         <View style={styles.btnContainer}>
@@ -104,7 +105,7 @@ export default function NewExpense() {
               height: '60%',
               justifyContent: 'center',
             }}
-            onPress={NewDate}>
+            onPress={handleNew}>
             Enviar
           </Button>
         </View>
