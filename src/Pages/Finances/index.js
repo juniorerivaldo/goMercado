@@ -31,7 +31,7 @@ export default function Finances() {
   // Open and close modal upon button clicks.
   const toggleModalVisibility = () => {
     setModalVisible(!isModalVisible);
-    console.log(saldo)
+    console.log(saldo);
   };
 
   // recebendo os dados
@@ -58,15 +58,13 @@ export default function Finances() {
     handleFetchData();
   }
 
-
-  
   return (
     <View style={styles.container}>
       <View style={styles.expensesShow}>
         <Text style={styles.titleText}>Meu Saldo</Text>
         <View style={styles.expenseContaier}>
           <Icon name="wallet-outline" style={styles.iconLabel} />
-          <Text style={styles.subtitleText}>R$: {saldo}</Text>
+          <Text style={styles.subtitleText}>R$: {saldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, "$1.")}</Text>
         </View>
         <TouchableOpacity
           onPress={toggleModalVisibility}
@@ -113,7 +111,7 @@ export default function Finances() {
             <View
               style={[styles.flatContainer, {backgroundColor: 'lightgray'}]}>
               <View style={styles.textContainer}>
-                <Text style={styles.text}>Valor da Compra: {item.expense}</Text>
+                <Text style={styles.text}>Valor da Compra: R$ {Number(item.expense).toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, "$1.")}</Text>
                 <Text style={styles.text}>Data da compra: {item.date}</Text>
               </View>
               <View>
