@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Button} from 'react-native-paper';
 import DateField from 'react-native-datefield';
 import moment from 'moment';
-
+import CurrencyInput from 'react-native-currency-input';
 import uuid from 'react-native-uuid';
 import {useNavigation} from '@react-navigation/native';
 
@@ -70,12 +70,16 @@ export default function NewExpense() {
 
         <View style={styles.inputsContainer}>
           <Icon name="currency-usd" style={styles.iconLabel} />
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Digite o valor da compra"
-            placeholderTextColor={'#333'}
-            onChangeText={setExpense}
+          <CurrencyInput
+            style={{left: 30}}
+            minValue={0}
             value={expense}
+            onChangeValue={setExpense}
+            placeholder="Digite o valor da compra"
+            prefix="R$"
+            delimiter="."
+            separator=","
+            precision={2}
             keyboardType="numeric"
           />
         </View>

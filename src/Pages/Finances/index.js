@@ -15,6 +15,7 @@ import {FAB} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {IconButton} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CurrencyInput from 'react-native-currency-input';
 
 export default function Finances() {
   function NewExpense() {
@@ -30,6 +31,7 @@ export default function Finances() {
   // Open and close modal upon button clicks.
   const toggleModalVisibility = () => {
     setModalVisible(!isModalVisible);
+    console.log(saldo)
   };
 
   // recebendo os dados
@@ -56,6 +58,8 @@ export default function Finances() {
     handleFetchData();
   }
 
+
+  
   return (
     <View style={styles.container}>
       <View style={styles.expensesShow}>
@@ -71,16 +75,27 @@ export default function Finances() {
         </TouchableOpacity>
         <Modal visible={isModalVisible} animationType={'slide'}>
           <View style={styles.modalContainer}>
-            <TextInput
+            <Text style={{fontSize: 28, fontWeight: 'bold', color: '#fff'}}>
+              Digite o Novo saldo aqui!
+            </Text>
+            <CurrencyInput
               style={{
                 marginBottom: 100,
                 marginTop: 30,
+                textAlign: 'center',
                 backgroundColor: '#fff',
                 borderRadius: 10,
               }}
-              onChangeText={setSaldo}
+              minValue={0}
+              maxValue={100000}
+              value={saldo}
+              onChangeValue={setSaldo}
+              placeholder="Digite a quantia do seu saldo"
+              prefix="R$"
+              delimiter="."
+              separator=","
+              precision={2}
               keyboardType="numeric"
-              placeholder="Digite o novo saldo EX: 2.193,00"
             />
             <TouchableOpacity onPress={toggleModalVisibility}>
               <Icon
@@ -184,7 +199,6 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     marginRight: 4,
     borderRadius: 10,
-    alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
     marginBottom: 10,
