@@ -50,7 +50,6 @@ export default function NewExpense() {
         setExpense('');
         setDate(new Date());
         Finances();
-        console.log(newData);
       }
     } catch (error) {
       console.log(error);

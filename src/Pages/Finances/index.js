@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 
 import {
   StyleSheet,
@@ -6,8 +6,6 @@ import {
   View,
   FlatList,
   Modal,
-  TextInput,
-  Button,
   TouchableOpacity,
 } from 'react-native';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
@@ -31,7 +29,6 @@ export default function Finances() {
   // Open and close modal upon button clicks.
   const toggleModalVisibility = () => {
     setModalVisible(!isModalVisible);
-    console.log(saldo);
   };
 
   // recebendo os dados
@@ -48,6 +45,11 @@ export default function Finances() {
     }, []),
   );
 
+  // check array changes
+  useEffect(() => {
+    handleSumItems();
+  }, [data]);
+
   // deletando os dados
   async function handleRemove(id) {
     const response = await AsyncStorage.getItem('@web-mercado:finances');
@@ -57,6 +59,19 @@ export default function Finances() {
     await AsyncStorage.setItem('@web-mercado:finances', JSON.stringify(data));
     handleFetchData();
   }
+  // removendo valor do total soma por cada item que integrar o array
+  let soma = [];
+  somaS = 0;
+  function handleSumItems() {
+    data.forEach(item => {
+      if (!soma.includes(item.id)) {
+        soma.push(item.expense, item.id);
+        somaS += item.expense;
+        console.log(somaS);
+        setSaldo(saldo - somaS);
+      }
+    });
+  }
 
   return (
     <View style={styles.container}>
@@ -64,7 +79,13 @@ export default function Finances() {
         <Text style={styles.titleText}>Meu Saldo</Text>
         <View style={styles.expenseContaier}>
           <Icon name="wallet-outline" style={styles.iconLabel} />
-          <Text style={styles.subtitleText}>R$: {saldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, "$1.")}</Text>
+          <Text style={styles.subtitleText}>
+            R$:{' '}
+            {Number(saldo)
+              .toFixed(2)
+              .replace('.', ',')
+              .replace(/(\d)(?=(\d{3})+\,)/g, '$1.')}
+          </Text>
         </View>
         <TouchableOpacity
           onPress={toggleModalVisibility}
@@ -111,7 +132,13 @@ export default function Finances() {
             <View
               style={[styles.flatContainer, {backgroundColor: 'lightgray'}]}>
               <View style={styles.textContainer}>
-                <Text style={styles.text}>Valor da Compra: R$ {Number(item.expense).toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, "$1.")}</Text>
+                <Text style={styles.text}>
+                  Valor da Compra: R${' '}
+                  {Number(item.expense)
+                    .toFixed(2)
+                    .replace('.', ',')
+                    .replace(/(\d)(?=(\d{3})+\,)/g, '$1.')}
+                </Text>
                 <Text style={styles.text}>Data da compra: {item.date}</Text>
               </View>
               <View>
