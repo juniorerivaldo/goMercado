@@ -13,7 +13,7 @@ import {FAB} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {IconButton} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CurrencyInput from 'react-native-currency-input';
+import BalanceModal from './../BalanceModal/index';
 
 export default function Finances() {
   function NewExpense() {
@@ -67,7 +67,6 @@ export default function Finances() {
       if (!soma.includes(item.id)) {
         soma.push(item.expense, item.id);
         somaS += item.expense;
-        console.log(somaS);
         setSaldo(saldo - somaS);
       }
     });
@@ -93,36 +92,7 @@ export default function Finances() {
           <Icon name="cog-outline" style={[styles.iconLabel, {fontSize: 30}]} />
         </TouchableOpacity>
         <Modal visible={isModalVisible} animationType={'slide'}>
-          <View style={styles.modalContainer}>
-            <Text style={{fontSize: 28, fontWeight: 'bold', color: '#fff'}}>
-              Digite o Novo saldo aqui!
-            </Text>
-            <CurrencyInput
-              style={{
-                marginBottom: 100,
-                marginTop: 30,
-                textAlign: 'center',
-                backgroundColor: '#fff',
-                borderRadius: 10,
-              }}
-              minValue={0}
-              maxValue={100000}
-              value={saldo}
-              onChangeValue={setSaldo}
-              placeholder="Digite a quantia do seu saldo"
-              prefix="R$"
-              delimiter="."
-              separator=","
-              precision={2}
-              keyboardType="numeric"
-            />
-            <TouchableOpacity onPress={toggleModalVisibility}>
-              <Icon
-                name="content-save-move-outline"
-                style={[styles.iconLabel, {fontSize: 50}]}
-              />
-            </TouchableOpacity>
-          </View>
+          <BalanceModal closeModal={toggleModalVisibility} />
         </Modal>
       </View>
       <View style={styles.flatContainer}>
