@@ -35,6 +35,7 @@ export default function Finances() {
     const _response = await AsyncStorage.getItem('@web-mercado:_balance');
     const _data = _response ? JSON.parse(_response) : [];
     set_Balance(_data);
+    
   }
 
   // funcao para recarregar a tela quando adiciona um novo item
@@ -81,10 +82,24 @@ export default function Finances() {
   // calculando o balance quando adicionar um novo item
   function handleCalculate() {
     let _newBalance = [];
+    let _balanceUpdate = 0;
     _balance.forEach(item => {
-      console.log(item);
+      if (_newBalance.some(i => i.id === item.id)) {
+        console.log('---- ITEM JÁ ESTA NA LISTA ----');
+      } else {
+        _newBalance.push({id: item.id, expense: item.expense});
+        console.log(_newBalance);
+        _balanceUpdate += item.expense;
+        console.log(_balanceUpdate);
+        setBalance(balance - _balanceUpdate);
+        setBalanceUpdate();
+      }
     });
   }
+  async function setBalanceUpdate() {
+    await AsyncStorage.setItem('@web-mercado:balance', JSON.stringify(balance));
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.expensesShow}>
