@@ -35,7 +35,6 @@ export default function Finances() {
     const _response = await AsyncStorage.getItem('@web-mercado:_balance');
     const _data = _response ? JSON.parse(_response) : [];
     set_Balance(_data);
-    
   }
 
   // funcao para recarregar a tela quando adiciona um novo item
@@ -55,6 +54,7 @@ export default function Finances() {
   function updateBalance() {
     setModalVisible(!isModalVisible);
     handleLoadBalance();
+    handleFetchData();
   }
 
   // deletando os dados
@@ -70,6 +70,8 @@ export default function Finances() {
     await AsyncStorage.setItem('@web-mercado:_balance', JSON.stringify(_data));
 
     handleFetchData();
+    handleCalculateDel();
+    handleLoadBalance();
   }
 
   // atualiza o valor do saldo quando abre ou fecha a modal
@@ -80,7 +82,7 @@ export default function Finances() {
   }
 
   // calculando o balance quando adicionar um novo item
-  function handleCalculate() {
+  async function handleCalculate() {
     let _newBalance = [];
     let _balanceUpdate = 0;
     _balance.forEach(item => {
@@ -88,11 +90,24 @@ export default function Finances() {
         console.log('---- ITEM JÁ ESTA NA LISTA ----');
       } else {
         _newBalance.push({id: item.id, expense: item.expense});
-        console.log(_newBalance);
         _balanceUpdate += item.expense;
-        console.log(_balanceUpdate);
         setBalance(balance - _balanceUpdate);
         setBalanceUpdate();
+      }
+    });
+  }
+
+  async function handleCalculateDel() {
+    let _newBalance = [];
+    let _balanceUpdate = 0;
+    _balance.forEach(item => {
+      if (_newBalance.some(i => i.id === item.id)) {
+        _newBalance.push({id: item.id, expense: item.expense});
+        _balanceUpdate -= item.expense;
+        setBalance(balance - _balanceUpdate);
+        setBalanceUpdate();
+      } else {
+        console.log('---- ITEM JÁ ESTA NA LISTA ----');
       }
     });
   }
