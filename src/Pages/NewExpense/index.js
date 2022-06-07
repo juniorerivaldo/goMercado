@@ -37,16 +37,32 @@ export default function NewExpense() {
           expense,
           date,
         };
+        const _newData = {
+          id,
+          expense,
+        };
 
         // baixando os dados e adicionando os novos com os antigos
         const response = await AsyncStorage.getItem('@web-mercado:finances');
         const previousData = response ? JSON.parse(response) : [];
         const data = [...previousData, newData];
 
+        // adicionando valor ao calculo de receita
+        const _balance = await AsyncStorage.getItem('@web-mercado:_balance');
+        const _previousData = _balance ? JSON.parse(_balance) : [];
+        const _data = [..._previousData, _newData];
+
+        // salvando o novo item
         await AsyncStorage.setItem(
           '@web-mercado:finances',
           JSON.stringify(data),
         );
+
+        await AsyncStorage.setItem(
+          '@web-mercado:_balance',
+          JSON.stringify(_data),
+        );
+
         setExpense('');
         setDate(new Date());
         Finances();

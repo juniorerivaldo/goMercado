@@ -42,7 +42,6 @@ export default function List() {
   }
 
   // alterando um item
-
   async function handleEdit(item) {
     const newData = {
       id: item.id,

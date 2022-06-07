@@ -19,59 +19,72 @@ export default function Finances() {
   function NewExpense() {
     navigation.navigate('Adicionar Gastos');
   }
-  // SETUP
+  // definição de estados
   const navigation = useNavigation();
-  const [saldo, setSaldo] = useState(0);
+  const [balance, setBalance] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
-
   const [data, setData] = useState([]);
+  const [_balance, set_Balance] = useState([]);
 
-  // Open and close modal upon button clicks.
-  const toggleModalVisibility = () => {
-    setModalVisible(!isModalVisible);
-  };
-
-  // recebendo os dados
+  // recebendo os dados de compras
   async function handleFetchData() {
     const response = await AsyncStorage.getItem('@web-mercado:finances');
     const data = response ? JSON.parse(response) : [];
     setData(data);
+
+    const _response = await AsyncStorage.getItem('@web-mercado:_balance');
+    const _data = _response ? JSON.parse(_response) : [];
+    set_Balance(_data);
   }
 
   // funcao para recarregar a tela quando adiciona um novo item
   useFocusEffect(
     useCallback(() => {
       handleFetchData();
+      handleLoadBalance();
     }, []),
   );
 
-  // check array changes
+  // chama a funcão de calculo
   useEffect(() => {
-    handleSumItems();
-  }, [data]);
+    handleCalculate();
+  }, [_balance]);
+
+  // fechar a modal e atualizar o valor do balance
+  function updateBalance() {
+    setModalVisible(!isModalVisible);
+    handleLoadBalance();
+  }
 
   // deletando os dados
   async function handleRemove(id) {
     const response = await AsyncStorage.getItem('@web-mercado:finances');
     const previousData = response ? JSON.parse(response) : [];
-
     const data = previousData.filter(item => item.id !== id);
     await AsyncStorage.setItem('@web-mercado:finances', JSON.stringify(data));
+
+    const _response = await AsyncStorage.getItem('@web-mercado:_balance');
+    const _previousData = _response ? JSON.parse(_response) : [];
+    const _data = _previousData.filter(item => item.id !== id);
+    await AsyncStorage.setItem('@web-mercado:_balance', JSON.stringify(_data));
+
     handleFetchData();
   }
-  // removendo valor do total soma por cada item que integrar o array
-  let soma = [];
-  somaS = 0;
-  function handleSumItems() {
-    data.forEach(item => {
-      if (!soma.includes(item.id)) {
-        soma.push(item.expense, item.id);
-        somaS += item.expense;
-        setSaldo(saldo - somaS);
-      }
-    });
+
+  // atualiza o valor do saldo quando abre ou fecha a modal
+  async function handleLoadBalance() {
+    const balanceResponse = await AsyncStorage.getItem('@web-mercado:balance');
+    const balance = balanceResponse ? JSON.parse(balanceResponse) : [];
+    setBalance(balance);
   }
 
+  // calculando o balance quando adicionar um novo item
+  function handleCalculate() {
+    let _newBalance = [];
+    _balance.forEach(item => {
+      console.log(item);
+    });
+  }
   return (
     <View style={styles.container}>
       <View style={styles.expensesShow}>
@@ -80,19 +93,17 @@ export default function Finances() {
           <Icon name="wallet-outline" style={styles.iconLabel} />
           <Text style={styles.subtitleText}>
             R$:{' '}
-            {Number(saldo)
+            {Number(balance)
               .toFixed(2)
               .replace('.', ',')
               .replace(/(\d)(?=(\d{3})+\,)/g, '$1.')}
           </Text>
         </View>
-        <TouchableOpacity
-          onPress={toggleModalVisibility}
-          style={styles.btnEditar}>
+        <TouchableOpacity onPress={updateBalance} style={styles.btnEditar}>
           <Icon name="cog-outline" style={[styles.iconLabel, {fontSize: 30}]} />
         </TouchableOpacity>
         <Modal visible={isModalVisible} animationType={'slide'}>
-          <BalanceModal closeModal={toggleModalVisibility} />
+          <BalanceModal closeModal={updateBalance} />
         </Modal>
       </View>
       <View style={styles.flatContainer}>

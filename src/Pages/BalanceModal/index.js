@@ -17,7 +17,6 @@ export default function BalanceModal(props) {
           '@web-mercado:balance',
           JSON.stringify(balance),
         );
-        setBalance(0);
         console.log(balance);
         props.closeModal();
       }
