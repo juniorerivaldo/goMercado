@@ -69,6 +69,7 @@ export default function Finances() {
     const _data = _previousData.filter(item => item.id !== id);
     await AsyncStorage.setItem('@web-mercado:_balance', JSON.stringify(_data));
 
+    // recarregando a tela com funçoes necessarias
     handleFetchData();
     handleCalculateDel();
     handleLoadBalance();
